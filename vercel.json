@@ -1,7 +1,6 @@
 {
-  "rewrites": [
-    { "source": "/api/search", "destination": "/api/search" },
-    { "source": "/api/extract", "destination": "/api/extract" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  "name": "startup-scout",
+  "version": "1.0.0",
+  "type": "module",
+  "engines": { "node": "24.x" }
 }
