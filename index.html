@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IndiaStartup Scout</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080810;--sur:#0f0f1a;--sur2:#161624;--bdr:#1e1e32;--bdr2:#2a2a42;--acc:#f97316;--acc2:#fb923c;--grn:#22d3a0;--txt:#ededf5;--mut:#6060a0;--mut2:#4a4a80;--crd:#0d0d1a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;min-height:100vh;}
+.glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 600px 400px at 15% 10%,rgba(249,115,22,.07),transparent 70%),radial-gradient(ellipse 400px 300px at 85% 85%,rgba(34,211,160,.05),transparent 70%);}
+.grid{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(255,255,255,.013) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.013) 1px,transparent 1px);background-size:60px 60px;}
+
+/* ── SETUP ── */
+#setup{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;}
+.sc{background:var(--sur);border:1px solid var(--bdr2);border-radius:24px;padding:40px;max-width:520px;width:100%;position:relative;overflow:hidden;}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--acc),var(--acc2),var(--grn));}
+.s-logo{display:flex;align-items:center;gap:11px;margin-bottom:22px;}
+.s-logo-i{width:44px;height:44px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.s-logo-t{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;}
+.s-logo-t span{color:var(--acc);}
+.s-h{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;margin-bottom:6px;}
+.s-sub{color:var(--mut);font-size:.84rem;line-height:1.6;margin-bottom:22px;}
+.s-step{background:var(--sur2);border:1px solid var(--bdr);border-radius:14px;padding:16px;margin-bottom:12px;}
+.s-step-h{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
+.s-num{width:23px;height:23px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#080810;font-family:'DM Mono',monospace;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.s-step-title{font-weight:600;font-size:.88rem;}
+.s-badge{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--grn);border:1px solid rgba(34,211,160,.3);background:rgba(34,211,160,.07);border-radius:4px;padding:2px 7px;}
+.s-step-body{font-size:.76rem;color:var(--mut);line-height:1.65;margin-bottom:11px;}
+.s-step-body a{color:var(--acc2);text-decoration:none;}
+.s-step-body a:hover{text-decoration:underline;}
+.s-step-body ol{padding-left:16px;margin-top:5px;}
+.s-step-body li{margin-bottom:3px;}
+.s-step-body b{color:var(--txt);}
+.s-inp{width:100%;background:var(--bg);border:1px solid var(--bdr2);border-radius:8px;padding:10px 13px;color:var(--txt);font-family:'DM Mono',monospace;font-size:.78rem;outline:none;transition:border-color .2s;}
+.s-inp:focus{border-color:var(--acc);}
+.s-inp::placeholder{color:var(--mut2);}
+.s-launch{width:100%;padding:14px;background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;border-radius:12px;font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:#080810;cursor:pointer;margin-top:6px;transition:opacity .2s,transform .15s;}
+.s-launch:hover{opacity:.9;transform:translateY(-1px);}
+.s-privacy{text-align:center;margin-top:9px;font-size:.68rem;color:var(--mut);}
+
+/* ── APP ── */
+#app{position:relative;z-index:1;display:none;}
+header{border-bottom:1px solid var(--bdr);padding:14px 26px;position:sticky;top:0;background:rgba(8,8,16,.94);backdrop-filter:blur(20px);z-index:100;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.logo{display:flex;align-items:center;gap:8px;}
+.logo-i{width:28px;height:28px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.logo-t{font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;}
+.logo-t span{color:var(--acc);}
+.hdr-mid{flex:1;max-width:360px;}
+.srch{position:relative;}
+.srch input{width:100%;background:var(--sur);border:1px solid var(--bdr2);border-radius:8px;padding:8px 12px 8px 30px;color:var(--txt);font-size:.78rem;outline:none;transition:border-color .2s;}
+.srch input:focus{border-color:var(--acc);}
+.srch input::placeholder{color:var(--mut2);}
+.srch-ico{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--mut);}
+.hdr-r{display:flex;align-items:center;gap:7px;}
+.pill{font-family:'DM Mono',monospace;font-size:.62rem;padding:4px 10px;border-radius:20px;color:var(--grn);border:1px solid rgba(34,211,160,.28);background:rgba(34,211,160,.05);}
+.hbtn{background:var(--sur);border:1px solid var(--bdr2);border-radius:8px;padding:7px 11px;color:var(--mut);font-size:.7rem;cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s;white-space:nowrap;}
+.hbtn:hover{border-color:var(--grn);color:var(--grn);}
+
+.wrap{display:flex;min-height:calc(100vh - 60px);}
+
+/* ── SIDEBAR ── */
+.sb{width:285px;flex-shrink:0;border-right:1px solid var(--bdr);padding:18px 15px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;}
+.sb::-webkit-scrollbar{width:3px;}
+.sb::-webkit-scrollbar-thumb{background:var(--bdr2);}
+.sb-sec{margin-bottom:20px;}
+.sb-lbl{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-bottom:8px;display:block;}
+
+.dbox{background:linear-gradient(135deg,rgba(249,115,22,.07),rgba(34,211,160,.04));border:1px solid rgba(249,115,22,.18);border-radius:13px;padding:13px;}
+.dbox-t{font-family:'Syne',sans-serif;font-weight:700;font-size:.86rem;margin-bottom:4px;}
+.dbox-d{font-size:.71rem;color:var(--mut);line-height:1.5;margin-bottom:11px;}
+.ql{max-height:160px;overflow-y:auto;margin-bottom:8px;}
+.ql::-webkit-scrollbar{width:3px;}
+.ql::-webkit-scrollbar-thumb{background:var(--bdr2);}
+.qi{display:flex;align-items:center;gap:6px;padding:3px 6px;border-radius:5px;cursor:pointer;font-size:.68rem;color:var(--mut);font-family:'DM Mono',monospace;transition:background .15s;}
+.qi:hover{background:var(--sur2);}
+.qi input{accent-color:var(--acc);cursor:pointer;}
+.qi.on{color:var(--txt);}
+.qbtns{display:flex;gap:5px;margin-bottom:9px;}
+.qbtn{flex:1;background:var(--sur2);border:1px solid var(--bdr2);border-radius:6px;padding:5px;color:var(--mut);font-size:.66rem;cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s;}
+.qbtn:hover{color:var(--txt);}
+.slrow{display:flex;justify-content:space-between;margin-bottom:3px;}
+.sll{font-size:.68rem;color:var(--mut);font-family:'DM Mono',monospace;}
+.slv{font-size:.68rem;color:var(--acc);font-family:'DM Mono',monospace;}
+input[type=range]{width:100%;accent-color:var(--acc);margin-bottom:10px;cursor:pointer;}
+.go{width:100%;padding:10px;background:linear-gradient(135deg,var(--grn),#00b894);border:none;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;color:#080810;cursor:pointer;transition:opacity .2s,transform .15s;}
+.go:hover:not(:disabled){opacity:.88;transform:translateY(-1px);}
+.go:disabled{opacity:.4;cursor:not-allowed;}
+
+.url-col{display:flex;flex-direction:column;gap:6px;}
+.url-inp{width:100%;background:var(--sur2);border:1px solid var(--bdr2);border-radius:8px;padding:9px 10px;color:var(--txt);font-family:'DM Mono',monospace;font-size:.72rem;outline:none;transition:border-color .2s;}
+.url-inp:focus{border-color:var(--acc);}
+.url-inp::placeholder{color:var(--mut2);}
+.ext{width:100%;padding:9px;background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;color:#080810;cursor:pointer;transition:opacity .2s;}
+.ext:hover:not(:disabled){opacity:.88;}
+.ext:disabled{opacity:.4;cursor:not-allowed;}
+
+.fsel{width:100%;background:var(--sur2);border:1px solid var(--bdr2);border-radius:8px;padding:8px 10px;color:var(--txt);font-size:.76rem;outline:none;cursor:pointer;margin-bottom:6px;}
+.fsel:focus{border-color:var(--acc);}
+
+.prog{height:4px;background:var(--sur2);border-radius:2px;margin:7px 0;display:none;overflow:hidden;}
+.prog.on{display:block;}
+.bar{height:100%;background:linear-gradient(90deg,var(--acc),var(--grn));border-radius:2px;transition:width .5s;width:0%;}
+.logbox{background:var(--bg);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;max-height:140px;overflow-y:auto;display:none;}
+.logbox.on{display:block;}
+.logbox::-webkit-scrollbar{width:3px;}
+.logbox::-webkit-scrollbar-thumb{background:var(--bdr2);}
+.ll{font-family:'DM Mono',monospace;font-size:.62rem;line-height:1.85;}
+.lok{color:var(--grn);}
+.lsk{color:var(--mut);}
+.ler{color:#f87171;}
+
+/* ── MAIN ── */
+.main{flex:1;padding:20px;min-width:0;}
+.stats{display:flex;gap:9px;margin-bottom:16px;flex-wrap:wrap;}
+.stile{background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:9px 14px;display:flex;align-items:center;gap:8px;}
+.sico{font-size:.95rem;}
+.sn{font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:var(--acc);}
+.sl{font-size:.66rem;color:var(--mut);font-family:'DM Mono',monospace;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
+
+/* ── CARD ── */
+.card{background:var(--crd);border:1px solid var(--bdr);border-radius:16px;overflow:hidden;position:relative;transition:border-color .25s,transform .2s,box-shadow .25s;animation:fu .36s ease both;}
+.card:hover{border-color:rgba(249,115,22,.3);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.cthumb{position:relative;width:100%;padding-bottom:36%;overflow:hidden;background:var(--sur);}
+.cthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.62;transition:opacity .3s;}
+.card:hover .cthumb img{opacity:.82;}
+.tov{position:absolute;inset:0;background:linear-gradient(to top,var(--crd),transparent 55%);}
+.yttag{position:absolute;top:8px;left:8px;background:rgba(255,0,0,.82);color:#fff;font-size:.56rem;font-family:'DM Mono',monospace;padding:3px 7px;border-radius:4px;}
+.sectag{position:absolute;top:8px;right:8px;font-family:'DM Mono',monospace;font-size:.56rem;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.07em;}
+.playbtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(249,115,22,.82);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;text-decoration:none;opacity:0;transition:opacity .2s;}
+.card:hover .playbtn{opacity:1;}
+.vtbadge{display:inline-flex;font-family:'DM Mono',monospace;font-size:.56rem;padding:3px 8px;border-radius:4px;margin:9px 14px 0;text-transform:uppercase;letter-spacing:.07em;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.25);}
+.ctop{padding:9px 14px 0;display:flex;align-items:flex-start;gap:9px;}
+.cav{width:36px;height:36px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;color:#080810;}
+.cmeta{flex:1;min-width:0;}
+.cname{font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ctag{font-size:.69rem;color:var(--mut);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.cbody{padding:9px 14px 12px;}
+.cdesc{font-size:.72rem;color:var(--mut);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px;}
+.chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
+.chip{font-family:'DM Mono',monospace;font-size:.58rem;padding:2px 7px;border-radius:4px;background:var(--sur2);border:1px solid var(--bdr2);color:var(--mut);}
+.flbl{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut2);margin-bottom:5px;}
+.fndrs{display:flex;flex-direction:column;gap:4px;margin-bottom:8px;}
+.frow{display:flex;align-items:center;gap:7px;background:var(--sur);border-radius:7px;padding:5px 8px;}
+.fav{width:24px;height:24px;border-radius:50%;background:var(--sur2);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:600;flex-shrink:0;}
+.finf{flex:1;min-width:0;}
+.fname{font-size:.75rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.frole{font-size:.6rem;color:var(--mut);}
+.libtn{display:flex;align-items:center;background:rgba(10,102,194,.1);border:1px solid rgba(10,102,194,.2);color:#60a5fa;border-radius:4px;padding:3px 7px;font-size:.58rem;font-family:'DM Mono',monospace;text-decoration:none;transition:background .2s;}
+.libtn:hover{background:rgba(10,102,194,.2);}
+.cfoot{display:flex;gap:5px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--bdr);}
+.fchip{display:flex;align-items:center;gap:4px;background:var(--sur);border:1px solid var(--bdr2);border-radius:6px;padding:5px 8px;font-size:.65rem;color:var(--grn);text-decoration:none;font-family:'DM Mono',monospace;transition:background .2s;}
+.fchip:hover{background:rgba(34,211,160,.07);}
+.delbtn{position:absolute;top:7px;right:7px;z-index:10;width:21px;height:21px;border-radius:5px;border:1px solid rgba(255,255,255,.07);background:rgba(8,8,16,.65);color:var(--mut2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s;}
+.delbtn:hover{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.3);color:#f87171;}
+
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;}
+.empty-i{font-size:2.4rem;margin-bottom:12px;opacity:.3;}
+.empty-t{font-family:'Syne',sans-serif;font-size:.95rem;margin-bottom:6px;}
+.empty-s{font-size:.78rem;color:var(--mut);line-height:1.6;}
+.empty-s b{color:var(--acc);}
+
+.toast{position:fixed;bottom:20px;right:20px;background:var(--sur);border:1px solid var(--bdr2);border-radius:12px;padding:10px 16px;font-family:'DM Mono',monospace;font-size:.73rem;z-index:9999;transform:translateY(70px);opacity:0;transition:all .3s;max-width:300px;}
+.toast.on{transform:translateY(0);opacity:1;}
+.tok{border-color:rgba(34,211,160,.4);color:var(--grn);}
+.terr{border-color:rgba(248,113,113,.4);color:#f87171;}
+.tinf{border-color:rgba(251,146,60,.4);color:var(--acc2);}
+
+@media(max-width:768px){.wrap{flex-direction:column;}.sb{width:100%;position:static;height:auto;}.cards{grid-template-columns:1fr;}header{padding:12px 16px;}.hdr-mid{display:none;}}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="grid"></div>
+
+  <div class="s-step">
+    <div class="s-step-h"><div class="s-num">1</div><div class="s-step-title">YouTube API Key</div><span class="s-badge">FREE</span></div>
+    <div class="s-step-body">
+      <ol>
+        <li>Go to <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a></li>
+        <li>New Project &rarr; search <b>YouTube Data API v3</b> &rarr; Enable</li>
+        <li>Credentials &rarr; Create Credentials &rarr; <b>API Key</b> &rarr; Copy</li>
+      </ol>
+    </div>
+    <input class="s-inp" id="ytKey" type="password" placeholder="Paste YouTube API Key..." />
+  </div>
+
+  <div class="s-step">
+    <div class="s-step-h"><div class="s-num">2</div><div class="s-step-title">Groq API Key</div><span class="s-badge">FREE &mdash; No credit card</span></div>
+    <div class="s-step-body">
+      <ol>
+        <li>Go to <a href="https://console.groq.com" target="_blank">console.groq.com</a> &rarr; Sign Up</li>
+        <li>Click <b>API Keys</b> &rarr; <b>Create API Key</b> &rarr; Copy it immediately</li>
+      </ol>
+    </div>
+    <input class="s-inp" id="groqKey" type="password" placeholder="Paste Groq API Key..." />
+  </div>
+
+  <button class="s-launch" onclick="launch()">&#128640; Launch Dashboard</button>
+  <div class="s-privacy">&#128274; Keys saved only in your browser. Never sent anywhere else.</div>
+</div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:block">
+  <header>
+    <div class="logo"><div class="logo-i">&#128640;</div><div class="logo-t">India<span>Startup</span> Scout</div></div>
+    <div class="hdr-mid"><div class="srch"><span class="srch-ico">&#128269;</span><input id="srchBar" placeholder="Search startups, founders, cities..." oninput="renderCards()"></div></div>
+    <div class="hdr-r">
+      <span class="pill" id="cntPill">0 startups</span>
+      <button class="hbtn" onclick="exportCSV()">&#8595; CSV</button>
+      <button class="hbtn" onclick="doReset()">&#9881; Reload</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="sb">
+      <div class="sb-sec">
+        <div class="dbox">
+          <div class="dbox-t">&#129302; Auto-Discover</div>
+          <div class="dbox-d">Searches YouTube for early-stage Indian startup videos and extracts details with AI.</div>
+          <span class="sb-lbl">Search Queries</span>
+          <div class="ql" id="qList"></div>
+          <div class="qbtns"><button class="qbtn" onclick="togAll(true)">All</button><button class="qbtn" onclick="togAll(false)">None</button></div>
+          <div class="slrow"><span class="sll">Videos per query</span><span class="slv" id="slv">8</span></div>
+          <input type="range" min="3" max="15" value="8" id="slider" oninput="document.getElementById('slv').textContent=this.value">
+          <button class="go" id="goBtn" onclick="autoDiscover()">&#129302; Start Auto-Discovery</button>
+        </div>
+        <div class="prog" id="prog"><div class="bar" id="bar"></div></div>
+        <div class="logbox" id="log"></div>
+      </div>
+
+      <div class="sb-sec">
+        <span class="sb-lbl">Scrape One Video</span>
+        <div class="url-col">
+          <input class="url-inp" id="urlInp" placeholder="https://youtube.com/watch?v=...">
+          <button class="ext" id="extBtn" onclick="scrapeOne()">&#9889; Extract Info</button>
+        </div>
+      </div>
+
+      <div class="sb-sec">
+        <span class="sb-lbl">Filters</span>
+        <select class="fsel" id="vtF" onchange="renderCards()">
+          <option value="">All Video Types</option>
+          <option value="demo">Product Demo</option>
+          <option value="founder_story">Founder Story</option>
+          <option value="interview">Interview</option>
+          <option value="behind_scenes">Behind the Scenes</option>
+          <option value="pitch">Pitch</option>
+          <option value="funding_news">Funding News</option>
+        </select>
+        <select class="fsel" id="secF" onchange="renderCards()">
+          <option value="">All Sectors</option>
+          <option>Fintech</option><option>Healthtech</option><option>Edtech</option><option>SaaS</option><option>D2C</option><option>Agritech</option><option>Logistics</option><option>Deeptech</option><option>Climatetech</option><option>Other</option>
+        </select>
+        <select class="fsel" id="stgF" onchange="renderCards()">
+          <option value="">All Stages</option>
+          <option>Pre-seed</option><option>Seed</option><option>Series A</option>
+        </select>
+        <select class="fsel" id="dtF" onchange="renderCards()">
+          <option value="">Any time</option>
+          <option value="1">Last month</option>
+          <option value="3">Last 3 months</option>
+          <option value="6">Last 6 months</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="stats">
+        <div class="stile"><span class="sico">&#127970;</span><div><div class="sn" id="stT">0</div><div class="sl">startups</div></div></div>
+        <div class="stile"><span class="sico">&#128100;</span><div><div class="sn" id="stF">0</div><div class="sl">founders</div></div></div>
+        <div class="stile"><span class="sico">&#127991;</span><div><div class="sn" id="stS">0</div><div class="sl">sectors</div></div></div>
+        <div class="stile"><span class="sico">&#128279;</span><div><div class="sn" id="stL">0</div><div class="sl">LinkedIn</div></div></div>
+      </div>
+      <div class="cards" id="cardGrid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+var QUERIES = [
+  "Indian startup founder journey bootstrapped 2024",
+  "India first time founder how I started startup",
+  "Indian founder built startup from scratch story",
+  "India founder quit job to start company 2024",
+  "Indian startup founder failure lessons 2024",
+  "India startup founder raised first funding 2024",
+  "India early stage startup founder interview 2024",
+  "Indian seed stage startup founder interview 2024",
+  "India bootstrapped startup founder interview 2024",
+  "Young Indian founder startup interview 2024",
+  "India startup behind the scenes building 2024",
+  "Indian startup day in life founder 2024",
+  "India founder vlog startup building 2024",
+  "India early stage startup product demo 2024",
+  "Indian seed startup MVP demo 2024",
+  "India startup pre-seed seed funding story 2024",
+  "Indian startup raised angel funding 2024",
+  "Indian startup Y Combinator W24 S24 founder",
+  "Bangalore early stage startup founder 2024",
+  "Mumbai startup founder story early stage 2024",
+  "Delhi NCR startup founder journey 2024",
+  "Hyderabad startup founder interview 2024",
+  "India early stage fintech startup founder 2024",
+  "Indian seed healthtech startup founder 2024",
+  "India early stage edtech startup story 2024",
+  "Indian agritech startup founder journey 2024",
+  "India D2C brand founder story early stage 2024",
+  "India early stage SaaS startup founder 2024",
+  "India deeptech startup founder story 2024"
+];
+
+var VTL = {demo:"Product Demo",founder_story:"Founder Story",interview:"Interview",behind_scenes:"Behind Scenes",pitch:"Pitch",funding_news:"Funding News"};
+var COLORS = [["#f97316","#fb923c"],["#22d3a0","#00f5c4"],["#818cf8","#a5b4fc"],["#f472b6","#f9a8d4"],["#fbbf24","#fde68a"],["#60a5fa","#93c5fd"],["#34d399","#6ee7b7"],["#a78bfa","#c4b5fd"]];
+var SC = {Fintech:"#22d3a0",Healthtech:"#f97316",Edtech:"#818cf8",SaaS:"#60a5fa",Agritech:"#34d399",Logistics:"#fbbf24","D2C":"#f472b6",Deeptech:"#a78bfa",Climatetech:"#00e5ff",Other:"#6060a0"};
+
+var startups = [];
+var cidx = 0;
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+var startups = [];
+var cidx = 0;
+
+window.onload = function() {
+  buildQL();
+  renderCards();
+};
+
+function doReset() { location.reload(); }
+
+// ── QUERY LIST ────────────────────────────────────────────────────────────────
+function buildQL() {
+  var h = "";
+  for (var i = 0; i < QUERIES.length; i++) {
+    h += '<label class="qi on"><input type="checkbox" checked value="' + i + '" onchange="this.parentElement.classList.toggle(\'on\',this.checked)">' + QUERIES[i] + '</label>';
+  }
+  document.getElementById("qList").innerHTML = h;
+}
+
+function togAll(on) {
+  var cb = document.querySelectorAll("#qList input");
+  for (var i = 0; i < cb.length; i++) { cb[i].checked = on; cb[i].parentElement.classList.toggle("on", on); }
+}
+
+function getSel() {
+  var s = [];
+  var cb = document.querySelectorAll("#qList input:checked");
+  for (var i = 0; i < cb.length; i++) s.push(QUERIES[parseInt(cb[i].value)]);
+  return s;
+}
+
+// ── YOUTUBE SEARCH (via backend) ─────────────────────────────────────────────
+async function ytSearch(query, max) {
+  var r = await fetch("/api/search", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query: query, maxResults: max })
+  });
+  var data = await r.json();
+  if (!r.ok) throw new Error(data.error || "Search failed " + r.status);
+  return data.results || [];
+}
+
+// ── GROQ EXTRACT (via backend) ───────────────────────────────────────────────
+async function groqExtract(video) {
+  var r = await fetch("/api/extract", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ video: video })
+  });
+  var data = await r.json();
+  if (!r.ok) throw new Error(data.error || "Extract failed " + r.status);
+  return data.startup || null;
+}
+
+// ── AUTO DISCOVER ─────────────────────────────────────────────────────────────
+async function autoDiscover() {
+  var queries = getSel();
+  if (!queries.length) { toast("Select at least one query", "err"); return; }
+  var maxQ = parseInt(document.getElementById("slider").value);
+  var btn = document.getElementById("goBtn");
+  btn.disabled = true; btn.textContent = "Discovering...";
+  var prog = document.getElementById("prog");
+  var bar = document.getElementById("bar");
+  var log = document.getElementById("log");
+  prog.classList.add("on"); log.classList.add("on");
+  log.innerHTML = ""; bar.style.width = "3%";
+  addLog("Starting: " + queries.length + " queries, " + maxQ + " videos each", "ok");
+
+  var allV = [], seen = {};
+  for (var i = 0; i < queries.length; i++) {
+    try {
+      addLog("Searching: " + queries[i], "sk");
+      var vids = await ytSearch(queries[i], maxQ);
+      for (var j = 0; j < vids.length; j++) {
+        if (!seen[vids[j].video_id]) { seen[vids[j].video_id] = true; allV.push(vids[j]); }
+      }
+      bar.style.width = (4 + (i / queries.length) * 36) + "%";
+      await sleep(300);
+    } catch(e) {
+      addLog("Search failed: " + e.message, "er");
+      if (e.message.indexOf("quota") >= 0 || e.message.indexOf("403") >= 0 || e.message.indexOf("400") >= 0) {
+        toast("YouTube API error: " + e.message, "err");
+        break;
+      }
+    }
+  }
+
+  addLog("Found " + allV.length + " unique videos. Running AI...", "ok");
+  bar.style.width = "45%";
+  var found = 0;
+  for (var i = 0; i < allV.length; i++) {
+    try {
+      var s = await groqExtract(allV[i]);
+      bar.style.width = (45 + (i / allV.length) * 52) + "%";
+      if (s) {
+        s.video_id = allV[i].video_id; s.source_url = allV[i].url;
+        s.video_title = allV[i].title; s.thumbnail = allV[i].thumbnail;
+        s.published_at = allV[i].published_at; s.scraped_at = new Date().toLocaleString("en-IN");
+        addStartup(s); found++;
+        addLog("Found: " + s.company_name + " (" + (s.sector || "?") + ")", "ok");
+      } else {
+        addLog("Skipped: " + allV[i].title.slice(0, 48), "sk");
+      }
+      await sleep(400);
+    } catch(e) {
+      addLog("Error: " + e.message, "er");
+      if (e.message.indexOf("rate") >= 0) await sleep(3000);
+    }
+  }
+
+  bar.style.width = "100%";
+  addLog("Done! Found " + found + " startups.", "ok");
+  toast("Done! Found " + found + " startups", "ok");
+  setTimeout(function() { prog.classList.remove("on"); bar.style.width = "0%"; }, 3000);
+  btn.disabled = false; btn.textContent = "Start Auto-Discovery";
+}
+
+// ── SCRAPE ONE ────────────────────────────────────────────────────────────────
+async function scrapeOne() {
+  var url = document.getElementById("urlInp").value.trim();
+  if (!url) { toast("Enter a YouTube URL", "err"); return; }
+  var m = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (!m) { toast("Invalid YouTube URL", "err"); return; }
+  var btn = document.getElementById("extBtn");
+  btn.disabled = true; btn.textContent = "Extracting...";
+  try {
+    var oe = await fetch("https://www.youtube.com/oembed?url=" + encodeURIComponent(url) + "&format=json");
+    var meta = oe.ok ? await oe.json() : {};
+    var video = { video_id:m[1], title:meta.title||url, description:"", channel:meta.author_name||"", published_at:null, url:url, thumbnail:"https://img.youtube.com/vi/"+m[1]+"/mqdefault.jpg" };
+    var s = await groqExtract(video);
+    if (!s) { toast("Not an early-stage Indian startup video", "inf"); }
+    else {
+      s.video_id=m[1]; s.source_url=url; s.video_title=video.title;
+      s.thumbnail=video.thumbnail; s.scraped_at=new Date().toLocaleString("en-IN");
+      addStartup(s); toast("Added: " + s.company_name, "ok");
+      document.getElementById("urlInp").value = "";
+    }
+  } catch(e) { toast(e.message, "err"); }
+  btn.disabled = false; btn.textContent = "Extract Info";
+}
+
+// ── CARDS ─────────────────────────────────────────────────────────────────────
+function addStartup(s) {
+  for (var i = 0; i < startups.length; i++) {
+    if (startups[i].company_name && s.company_name && startups[i].company_name.toLowerCase() === s.company_name.toLowerCase()) return;
+  }
+  s._c = COLORS[cidx % COLORS.length]; cidx++;
+  startups.unshift(s); renderCards();
+}
+
+function removeCard(name) {
+  startups = startups.filter(function(s) { return s.company_name !== name; });
+  renderCards();
+}
+
+function renderCards() {
+  var q = ((document.getElementById("srchBar")||{}).value||"").toLowerCase();
+  var sec = (document.getElementById("secF")||{}).value||"";
+  var stg = (document.getElementById("stgF")||{}).value||"";
+  var vt = (document.getElementById("vtF")||{}).value||"";
+  var dm = parseInt((document.getElementById("dtF")||{}).value)||0;
+
+  var f = startups.filter(function(s) {
+    var str = [s.company_name,s.city,s.sector,s.video_type||""].concat((s.founders||[]).map(function(f){return f.name;})).join(" ").toLowerCase();
+    var dok = !dm||!s.published_at||((Date.now()-new Date(s.published_at).getTime())/(864e5*30))<=dm;
+    return (!q||str.indexOf(q)>=0)&&(!sec||s.sector===sec)&&(!stg||s.stage===stg)&&(!vt||s.video_type===vt)&&dok;
+  });
+
+  document.getElementById("stT").textContent = startups.length;
+  document.getElementById("stF").textContent = startups.reduce(function(a,s){return a+(s.founders||[]).length;},0);
+  document.getElementById("stS").textContent = Object.keys(startups.reduce(function(a,s){if(s.sector)a[s.sector]=1;return a;},{})).length;
+  document.getElementById("stL").textContent = startups.reduce(function(a,s){return a+(s.founders||[]).filter(function(f){return f.linkedin;}).length;},0);
+  document.getElementById("cntPill").textContent = startups.length + " startups";
+
+  if (!startups.length) {
+    document.getElementById("cardGrid").innerHTML = '<div class="empty"><div class="empty-i">&#128249;</div><div class="empty-t">No startups yet</div><div class="empty-s">Click <b>Start Auto-Discovery</b> to find early-stage Indian startups from YouTube.</div></div>';
+    return;
+  }
+  document.getElementById("cardGrid").innerHTML = f.length
+    ? f.map(function(s,i){return buildCard(s,i);}).join("")
+    : '<div class="empty"><div class="empty-i">&#128269;</div><div class="empty-t">No matches</div><div class="empty-s">Try a different filter.</div></div>';
+}
+
+function buildCard(s, idx) {
+  var c = s._c || COLORS[0];
+  var ini = s.company_name.split(" ").map(function(w){return w[0];}).join("").slice(0,2).toUpperCase();
+  var sc = SC[s.sector] || "#6060a0";
+  var cc = s.confidence==="high"?"#22d3a0":s.confidence==="medium"?"#fbbf24":"#f87171";
+
+  var fh = "";
+  (s.founders||[]).forEach(function(f) {
+    var fi = f.name.split(" ").map(function(w){return w[0];}).join("").slice(0,2).toUpperCase();
+    fh += '<div class="frow"><div class="fav">'+fi+'</div><div class="finf"><div class="fname">'+esc(f.name)+'</div><div class="frole">'+esc(f.title||"")+'</div></div>'
+      +(f.linkedin?'<a class="libtn" href="'+f.linkedin+'" target="_blank">in</a>':'<span class="libtn" style="opacity:.22;cursor:default">in</span>')
+      +'</div>';
+  });
+  if (!fh) fh = '<div style="font-size:.7rem;color:var(--mut);font-style:italic">No founder info found</div>';
+
+  var chips = "";
+  if (s.city) chips += '<span class="chip">&#128205; '+esc(s.city)+'</span>';
+  if (s.stage) chips += '<span class="chip">&#127807; '+esc(s.stage)+'</span>';
+  if (s.founded_year) chips += '<span class="chip">&#128198; Est. '+esc(s.founded_year)+'</span>';
+  if (s.published_at) { var pd=new Date(s.published_at); chips+='<span class="chip">&#128197; '+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][pd.getMonth()]+" "+pd.getFullYear()+'</span>'; }
+
+  var vtb = s.video_type&&VTL[s.video_type] ? '<div class="vtbadge">'+VTL[s.video_type]+'</div>' : "";
+  var ft = (s.website?'<a class="fchip" href="'+s.website+'" target="_blank">&#127758; Website</a>':"")
+    +'<a class="fchip" href="'+s.source_url+'" target="_blank">&#9654; Video</a>';
+
+  return '<div class="card" style="animation-delay:'+(idx*0.04)+'s">'
+    +'<button class="delbtn" onclick="removeCard('+JSON.stringify(s.company_name)+')">&#10005;</button>'
+    +(s.thumbnail?'<div class="cthumb"><img src="'+s.thumbnail+'" onerror="this.parentElement.style.display=\'none\'"><div class="tov"></div><span class="yttag">&#9654; YouTube</span><div class="sectag" style="background:'+sc+'18;color:'+sc+';border:1px solid '+sc+'40">'+esc(s.sector||"Other")+'</div><a class="playbtn" href="'+s.source_url+'" target="_blank">&#9654;</a></div>':"")
+    +vtb
+    +'<div class="ctop"><div class="cav" style="background:linear-gradient(135deg,'+c[0]+','+c[1]+')">'+ini+'</div>'
+    +'<div class="cmeta"><div class="cname">'+esc(s.company_name)+'</div><div class="ctag">'+esc(s.tagline||"")+'</div></div>'
+    +'<div class="cdot" style="background:'+cc+'"></div></div>'
+    +'<div class="cbody">'+(s.description?'<div class="cdesc">'+esc(s.description)+'</div>':"")
+    +'<div class="chips">'+chips+'</div>'
+    +'<div class="flbl">Founders</div><div class="fndrs">'+fh+'</div>'
+    +'<div class="cfoot">'+ft+'</div></div></div>';
+}
+
+function esc(s) {
+  if (!s) return "";
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ── EXPORT ────────────────────────────────────────────────────────────────────
+function exportCSV() {
+  if (!startups.length) { toast("Nothing to export", "inf"); return; }
+  var rows = [["Company","Tagline","Sector","Stage","City","Founded","Website","Video Type","Founders","LinkedIn","Confidence","Video URL","Scraped At"]];
+  startups.forEach(function(s) {
+    rows.push([s.company_name,s.tagline||"",s.sector||"",s.stage||"",s.city||"",s.founded_year||"",s.website||"",s.video_type||"",
+      (s.founders||[]).map(function(f){return f.name;}).join("; "),
+      (s.founders||[]).map(function(f){return f.linkedin||"";}).filter(Boolean).join("; "),
+      s.confidence||"",s.source_url||"",s.scraped_at||""]);
+  });
+  var csv = rows.map(function(r){return r.map(function(c){return '"'+String(c||"").replace(/"/g,'""')+'"';}).join(",");}).join("\n");
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+  a.download = "india_startups_"+Date.now()+".csv"; a.click();
+  toast("Exported "+startups.length+" startups","ok");
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function addLog(msg, type) {
+  var b = document.getElementById("log");
+  var d = document.createElement("div");
+  d.className = "ll l"+type;
+  d.textContent = "["+new Date().toLocaleTimeString()+"] "+msg;
+  b.appendChild(d); b.scrollTop = b.scrollHeight;
+}
+
+function sleep(ms) { return new Promise(function(r){setTimeout(r,ms);}); }
+
+var _tt;
+function toast(msg, type) {
+  var el = document.getElementById("toast");
+  var cls = type==="ok"?"tok":type==="err"?"terr":"tinf";
+  el.textContent = msg; el.className = "toast on "+cls;
+  clearTimeout(_tt); _tt = setTimeout(function(){el.classList.remove("on");},4000);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var i = document.getElementById("urlInp");
+  if (i) i.addEventListener("keydown", function(e){ if(e.key==="Enter") scrapeOne(); });
+});
+</script>
+</body>
+</html>
